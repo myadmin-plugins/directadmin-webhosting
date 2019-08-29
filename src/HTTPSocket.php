@@ -1,5 +1,7 @@
 <?php
 
+namespace Detain\MyAdminDirectAdminWeb;
+
 /**
  * Socket communication class.
  *
@@ -64,6 +66,11 @@ class HTTPSocket {
 	var $ssl_setting_message = 'DirectAdmin appears to be using SSL. Change your script to connect to ssl://';
 
 	var $extra_headers = array();
+    
+    public static function unhtmlentities($string)
+    {
+        return preg_replace_callback('~&#([0-9][0-9])~', function ($matches) { return chr($matches); }, $string);
+    }    
 
 	/**
 	 * Create server "connection".
