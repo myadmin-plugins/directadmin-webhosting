@@ -125,7 +125,6 @@ class Plugin
 					}
 				}
 			} */
-			myadmin_log(self::$module, 'info', 'Response: '.str_replace('\n', '', strip_tags($result)), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$result = json_decode($result, true);
 			if (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
 				while (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
@@ -179,9 +178,6 @@ class Plugin
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
 			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $ip, 'A', 86400, 0, true);
-			myadmin_log(self::$module, 'info', 'Response: '.str_replace('\n', "\n", json_encode($result)), __LINE__, __FILE__, self::$module, $serviceClass->getId());
-			$result = $whm->park($options['username'], 'wh'.$serviceClass->getId().'.ispot.cc', '');
-			myadmin_log(self::$module, 'info', 'Response: '.str_replace('\n', "\n", json_encode($result)), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event['success'] = true;
 			$event->stopPropagation();
 		}
