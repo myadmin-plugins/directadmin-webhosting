@@ -106,9 +106,6 @@ class Plugin
 			myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			if ($result['error'] != "0")
 			{
-				echo "<b>Error Creating user $username on server $server_ip:<br>\n";
-				echo $result['text']."<br>\n";
-				echo $result['details']."<br></b>\n";
 				$event['success'] = false;
 				myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.$result['text'].' Details:'.$result['details'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
 				$event->stopPropagation();
