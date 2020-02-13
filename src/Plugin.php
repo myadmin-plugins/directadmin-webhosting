@@ -103,7 +103,7 @@ class Plugin
 			$sock->query($apiCmd, $apiOptions);
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-			myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			if ($result['error'] != "0")
 			{
 				echo "<b>Error Creating user $username on server $server_ip:<br>\n";
@@ -125,7 +125,6 @@ class Plugin
 					}
 				}
 			} */
-			$result = json_decode($result, true);
 			if (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
 				while (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
 					$password = generateRandomString(10, 2, 2, 2, 1);
@@ -135,7 +134,7 @@ class Plugin
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -151,7 +150,7 @@ class Plugin
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -166,7 +165,7 @@ class Plugin
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -208,7 +207,7 @@ class Plugin
 			$sock->query($apiCmd, $apiOptions);
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-			myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event->stopPropagation();
 		}
 	}
@@ -240,7 +239,7 @@ class Plugin
 				$sock->query($apiCmd, $apiOptions);
 				$result = $sock->fetch_parsed_body();
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-				myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+				myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
 			$event->stopPropagation();
 		}
@@ -274,7 +273,7 @@ class Plugin
 				$sock->query($apiCmd, $apiOptions);
 				$result = $sock->fetch_parsed_body();
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-				myadmin_log(self::$module, 'info', 'Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+				myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
 			$event->stopPropagation();
 			if (trim($serviceClass->getUsername()) == '') {
