@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 //This is a sample scripts/custom/user_create_post.sh script, to create a database upon User creation.

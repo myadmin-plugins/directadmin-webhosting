@@ -27,11 +27,11 @@ $sock->set_login($server_login,$server_pass);
 $sock->query('/CMD_API_SELECT_USERS',
 	array(
 		'location' => 'CMD_SELECT_USERS',
-		'suspend' => 'Suspend', // note - this can also be 'Unsuspend'
+		'suspend' => 'Unsuspend', // note - this can also be 'Unsuspend'
 		'select0' => $username
 	));
 $result = $sock->fetch_parsed_body();
 print_r($result);
-			 
+
 
 ?>

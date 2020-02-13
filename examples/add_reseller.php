@@ -4,21 +4,21 @@ use Detain\MyAdminDirectAdminWeb\HTTPSocket;
 
 require_once('../vendor/autoload.php');
 
-$server_ip="da1.is.cc"; //IP that User is assigned to
+
 $server_login="admin";
 $server_pass="admin_password";
 $server_host="da1.is.cc"; //where the API connects to
 $server_ssl="Y";
 $server_port=2222;
 
-$username='firstsite';
-$domain='firstsite.com';
+$username='firstres';
+$domain='firstreseller.com';
 $email='detain@interserver.net';
 $pass='something';
-$package='Standard';
+$package='RSONE';
 
 
-echo "Creating user $username on $server_ip.... <br>\n";
+echo "Creating reseller $username .... <br>\n";
 
 $sock = new HTTPSocket;
 if ($server_ssl == 'Y')
@@ -32,7 +32,7 @@ else
 
 $sock->set_login($server_login,$server_pass);
 
-$sock->query('/CMD_API_ACCOUNT_USER',
+$sock->query('/CMD_API_ACCOUNT_RESELLER',
 	array(
 		'action' => 'create',
 		'add' => 'Submit',
@@ -42,7 +42,7 @@ $sock->query('/CMD_API_ACCOUNT_USER',
 		'passwd2' => $pass,
 		'domain' => $domain,
 		'package' => $package,
-		'ip' => $server_ip,
+		'ip' => 'shared',
 		'notify' => 'yes'
 	));
 
@@ -51,13 +51,13 @@ print_r($result);
 
 if ($result['error'] != "0")
 {
-	echo "<b>Error Creating user $username on server $server_ip:<br>\n";
+	echo "<b>Error Creating user $username :<br>\n";
 	echo $result['text']."<br>\n";
 	echo $result['details']."<br></b>\n";
 }
 else
 {
-	echo "User $username created on server $server_ip<br>\n";
+	echo "User $username created <br>\n";
 }
 
 exit(0);

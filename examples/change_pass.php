@@ -1,4 +1,3 @@
-#!/usr/local/bin/php
 <?php
 
 //Change a password for a User via command line, through the API.
@@ -6,9 +5,13 @@
 //download the following file to the same directory:
 //http://files.directadmin.com/services/all/httpsocket/httpsocket.php
 
-$server_ip="127.0.0.1";
+use \Detain\MyAdminDirectAdminWeb\HTTPSocket;
+
+require_once('../vendor/autoload.php');
+
+$server_ip="da1.is.cc"; //IP that User is assigned to
 $server_login="admin";
-$server_pass="PASSWORDHERE";
+$server_pass="admin_password";
 $server_ssl="N";
 
 if ($argc < 3)
@@ -21,9 +24,7 @@ $username=$argv[1];
 $pass=$argv[2];
 	
 echo "changing password for user $username\n";
-
-include 'httpsocket.php';
- 
+	   
 $sock = new HTTPSocket;
 if ($server_ssl == 'Y')
 {
@@ -63,5 +64,3 @@ else
 }
 
 exit(0);
-
-?>
