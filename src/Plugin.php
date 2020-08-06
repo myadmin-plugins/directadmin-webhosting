@@ -62,7 +62,7 @@ class Plugin
 	{
 		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
-			myadmin_log(self::$module, 'info', 'DirectAdmin Activation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin Activation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$serviceTypes = run_event('get_service_types', false, self::$module);
 			$settings = get_module_settings(self::$module);
 			$extra = run_event('parse_service_extra', $serviceClass->getExtra(), self::$module);
@@ -88,6 +88,11 @@ class Plugin
 			$sock = new HTTPSocket;
 			$sock->connect(($server_ssl == 'Y' ? 'ssl://' : '').$ip, 2222);
 			$sock->set_login('admin',$hash);
+			$sock->query('/CMD_API_SHOW_RESELLER_IPS');
+			$result = $sock->fetch_parsed_body();
+			if (!in_array($siteIp, $result['list'])) {
+				$siteIp = $result['list'][0];
+			}
 			$apiOptions = [
 				'action' => 'create',
 				'add' => 'Submit',
@@ -96,7 +101,6 @@ class Plugin
 				'passwd' => $password,
 				'passwd2' => $password,
 				'domain' => $hostname,
-				'package' => $serviceTypes[$serviceClass->getType()]['services_field2'],
 				'ip' => $siteIp,
 				'notify' => 'yes'
 			];
@@ -112,7 +116,7 @@ class Plugin
 			$sock->query($apiCmd, $apiOptions);
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-			myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' '.json_encode($apiOptions).' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			if ($result['error'] != "0")
 			{
 				$event['success'] = false;
@@ -136,11 +140,11 @@ class Plugin
 					$password = generateRandomString(10, 2, 2, 2, 1);
 					$apiOptions['passwd'] = $password;
 					$apiOptions['passwd2'] = $password;
-					myadmin_log(self::$module, 'info', "Trying Password {$apiOptions['password']}", __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', "Trying Password {$apiOptions['password']}", __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -152,11 +156,11 @@ class Plugin
 					$username .= 'a';
 					$username = mb_substr($username, 1);
 					$apiOptions['username'] = $username;
-					myadmin_log(self::$module, 'info', 'Trying Username '.$apiOptions['username'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', 'Trying Username '.$apiOptions['username'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -167,11 +171,11 @@ class Plugin
 					$username .= 'a';
 					$username = mb_substr($username, 1);
 					$apiOptions['username'] = $username;
-					myadmin_log(self::$module, 'info', 'Trying Username '.$apiOptions['username'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', 'Trying Username '.$apiOptions['username'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					$sock->query($apiCmd, $apiOptions);
 					$result = $sock->fetch_parsed_body();
 					request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-					myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+					myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 					if ($result['error'] != "0")
 					{
 					}
@@ -179,10 +183,10 @@ class Plugin
 			}
 			$db = get_module_db(self::$module);
 			$username = $db->real_escape($username);
-			$db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$ip}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
+			$db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$siteIp}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
-			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $ip, 'A', 86400, 0, true);
+			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
 			$event['success'] = true;
 			$event->stopPropagation();
 		}
@@ -213,7 +217,7 @@ class Plugin
 			$sock->query($apiCmd, $apiOptions);
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-			myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event->stopPropagation();
 		}
 	}
@@ -226,7 +230,7 @@ class Plugin
 	{
 		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
-			myadmin_log(self::$module, 'info', 'DirectAdmin Deactivation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin Deactivation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$settings = get_module_settings(self::$module);
 			if ($serviceClass->getServer() > 0) {
 				$serverdata = get_service_master($serviceClass->getServer(), self::$module);
@@ -245,7 +249,7 @@ class Plugin
 				$sock->query($apiCmd, $apiOptions);
 				$result = $sock->fetch_parsed_body();
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-				myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+				myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
 			$event->stopPropagation();
 		}
@@ -260,7 +264,7 @@ class Plugin
 	{
 		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
-			myadmin_log(self::$module, 'info', 'DirectAdmin Termination', __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin Termination', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$settings = get_module_settings(self::$module);
 			$serverdata = get_service_master($serviceClass->getServer(), self::$module);
 			$hash = $serverdata[$settings['PREFIX'].'_key'];
@@ -279,7 +283,7 @@ class Plugin
 				$sock->query($apiCmd, $apiOptions);
 				$result = $sock->fetch_parsed_body();
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
-				myadmin_log(self::$module, 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+				myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
 			$event->stopPropagation();
 			if (trim($serviceClass->getUsername()) == '') {
@@ -303,10 +307,10 @@ class Plugin
 			$serviceClass = $event->getSubject();
 			$settings = get_module_settings(self::$module);
 			$directadmin = new DirectAdmin(FANTASTICO_USERNAME, FANTASTICO_PASSWORD);
-			myadmin_log(self::$module, 'info', 'IP Change - (OLD:'.$serviceClass->getIp().") (NEW:{$event['newip']})", __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'IP Change - (OLD:'.$serviceClass->getIp().") (NEW:{$event['newip']})", __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$result = $directadmin->editIp($serviceClass->getIp(), $event['newip']);
 			if (isset($result['faultcode'])) {
-				myadmin_log(self::$module, 'error', 'DirectAdmin editIp('.$serviceClass->getIp().', '.$event['newip'].') returned Fault '.$result['faultcode'].': '.$result['fault'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
+				myadmin_log('myadmin', 'error', 'DirectAdmin editIp('.$serviceClass->getIp().', '.$event['newip'].') returned Fault '.$result['faultcode'].': '.$result['fault'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
 				$event['status'] = 'error';
 				$event['status_text'] = 'Error Code '.$result['faultcode'].': '.$result['fault'];
 			} else {
