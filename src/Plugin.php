@@ -60,7 +60,7 @@ class Plugin
 	 */
 	public static function getActivate(GenericEvent $event)
 	{
-		if ($event['type'] == get_service_define('WEB_DIRECTADMIN')) {
+		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
 			myadmin_log(self::$module, 'info', 'DirectAdmin Activation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$serviceTypes = run_event('get_service_types', false, self::$module);
@@ -100,6 +100,15 @@ class Plugin
 				'ip' => $siteIp,
 				'notify' => 'yes'
 			];
+			if (strpos($serviceTypes[$serviceClass->getType()]['services_field2'], ',') === false) {
+				$apiOptions['package'] = $serviceTypes[$serviceClass->getType()]['services_field2'];
+			} else {
+				$fields = explode(',', $serviceTypes[$serviceClass->getType()]['services_field2']);
+				foreach ($fields as $field) {
+					list($key, $value) = explode('=', $field);
+					$apiOptions[$key] = $value;
+				}
+			}
 			$sock->query($apiCmd, $apiOptions);
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $result, $serviceClass->getId());
@@ -185,7 +194,7 @@ class Plugin
 	 */
 	public static function getReactivate(GenericEvent $event)
 	{
-		if ($event['type'] == get_service_define('WEB_DIRECTADMIN')) {
+		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
 			$settings = get_module_settings(self::$module);
 			$serverdata = get_service_master($serviceClass->getServer(), self::$module);
@@ -215,7 +224,7 @@ class Plugin
 	 */
 	public static function getDeactivate(GenericEvent $event)
 	{
-		if ($event['type'] == get_service_define('WEB_DIRECTADMIN')) {
+		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
 			myadmin_log(self::$module, 'info', 'DirectAdmin Deactivation', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$settings = get_module_settings(self::$module);
@@ -249,7 +258,7 @@ class Plugin
 	 */
 	public static function getTerminate(GenericEvent $event)
 	{
-		if ($event['type'] == get_service_define('WEB_DIRECTADMIN')) {
+		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
 			myadmin_log(self::$module, 'info', 'DirectAdmin Termination', __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$settings = get_module_settings(self::$module);
@@ -290,7 +299,7 @@ class Plugin
 	 */
 	public static function getChangeIp(GenericEvent $event)
 	{
-		if ($event['type'] == get_service_define('WEB_DIRECTADMIN')) {
+		if (in_array($event['type'], [get_service_define('WEB_DIRECTADMIN'), get_service_define('WEB_STORAGE')])) {
 			$serviceClass = $event->getSubject();
 			$settings = get_module_settings(self::$module);
 			$directadmin = new DirectAdmin(FANTASTICO_USERNAME, FANTASTICO_PASSWORD);
