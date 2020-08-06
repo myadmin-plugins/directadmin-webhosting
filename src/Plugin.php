@@ -186,6 +186,8 @@ class Plugin
 			$db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$siteIp}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
+			$result = add_dns_record(14426, 'st'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
+			function_requirements('add_dns_record');
 			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
 			$event['success'] = true;
 			$event->stopPropagation();
