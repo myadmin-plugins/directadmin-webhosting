@@ -186,8 +186,6 @@ class Plugin
 			$db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$siteIp}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
-			$result = add_dns_record(14426, 'st'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
-			function_requirements('add_dns_record');
 			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
 			$event['success'] = true;
 			$event->stopPropagation();
@@ -356,7 +354,6 @@ class Plugin
 		$settings = $event->getSubject();
 		$settings->setTarget('module');
 		$settings->add_select_master(_(self::$module), _('Default Servers'), self::$module, 'new_website_directadmin_server', _('Default DirectAdmin Setup Server'), NEW_WEBSITE_DIRECTADMIN_SERVER, get_service_define('WEB_DIRECTADMIN'));
-		$settings->add_select_master(_(self::$module), _('Default Servers'), self::$module, 'new_website_directadmin_storage_server', _('Default DirectAdmin Storage Server'), NEW_WEBSITE_DIRECTADMIN_STORAGE_SERVER, get_service_define('WEB_STORAGE'));
 		$settings->add_dropdown_setting(self::$module, _('Out of Stock'), 'outofstock_webhosting_directadmin', _('Out Of Stock DirectAdmin Webhosting'), _('Enable/Disable Sales Of This Type'), $settings->get_setting('OUTOFSTOCK_WEBHOSTING_DIRECTADMIN'), ['0', '1'], ['No', 'Yes']);
 	}
 }
