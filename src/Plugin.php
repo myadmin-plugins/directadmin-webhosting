@@ -340,7 +340,7 @@ class Plugin
 		 * @var \MyAdmin\Plugins\Loader $this->loader
 		 */
 		$loader = $event->getSubject();
-		$loader->add_requirement('api_auto_directadmin_login', '/../vendor/detain/myadmin-directadmin-webhosting/src/api.php');
+		$loader->add_requirement('api_auto_directadmin_login', '/../vendor/detain/myadmin-directadmin-webhosting/src/api_auto_directadmin_login.php');
 	}
 
 	/**
