@@ -136,7 +136,7 @@ class Plugin
 					}
 				}
 			} */
-			if (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
+			if (isset($result['result']) && mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
 				while (mb_substr($result['result'][0]['statusmsg'], 0, 19) == 'Sorry, the password') {
 					$password = generateRandomString(10, 2, 2, 2, 1);
 					$apiOptions['passwd'] = $password;
@@ -153,7 +153,7 @@ class Plugin
 				}
 				$GLOBALS['tf']->history->add($settings['PREFIX'], 'password', $serviceClass->getId(), $options['password']);
 			}
-			if ($result['result'][0]['statusmsg'] == 'Sorry, a group for that username already exists.') {
+			if (isset($result['result']) && $result['result'][0]['statusmsg'] == 'Sorry, a group for that username already exists.') {
 				while ($result['result'][0]['statusmsg'] == 'Sorry, a group for that username already exists.') {
 					$username .= 'a';
 					$username = mb_substr($username, 1);
@@ -169,7 +169,7 @@ class Plugin
 					}
 				}
 			}
-			if (preg_match("/^.*This system already has an account named .{1,3}{$username}.{1,3}\.$/m", $result['result'][0]['statusmsg']) || preg_match('/^.*The name of another account on this server has the same initial/m', $result['result'][0]['statusmsg'])) {
+			if (isset($result['result']) && (preg_match("/^.*This system already has an account named .{1,3}{$username}.{1,3}\.$/m", $result['result'][0]['statusmsg']) || preg_match('/^.*The name of another account on this server has the same initial/m', $result['result'][0]['statusmsg']))) {
 				while (preg_match("/^.*This system already has an account named .{1,3}{$username}.{1,3}\.$/m", $result['result'][0]['statusmsg']) || preg_match('/^.*The name of another account on this server has the same initial/m', $result['result'][0]['statusmsg'])) {
 					$username .= 'a';
 					$username = mb_substr($username, 1);
