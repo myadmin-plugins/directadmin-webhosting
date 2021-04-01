@@ -101,7 +101,8 @@ class Plugin
 				'passwd' => $password,
 				'passwd2' => $password,
 				'domain' => $hostname,
-				'ip' => $siteIp,
+				//'ip' => $siteIp,
+				'ip' => 'shared_random',
 				'notify' => 'yes'
 			];
 			if (strpos($serviceTypes[$serviceClass->getType()]['services_field2'], ',') === false) {
