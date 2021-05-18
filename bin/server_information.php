@@ -27,5 +27,5 @@ $sock->set_login("admin", $password);
 
 $sock->query('/CMD_API_ADMIN_STATS');
 $result = $sock->fetch_parsed_body();
-
+print_r($sock);
 print_r($result);
