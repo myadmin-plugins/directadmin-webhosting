@@ -188,6 +188,11 @@ class Plugin
 			}
 			$db = get_module_db(self::$module);
 			$username = $db->real_escape($username);
+			if (!isset($result['error']) || $result['error'] == '0' || $result['error'] == 0) {
+				$sock->query('/CMD_API_SHOW_USER_CONFIG', ['user'=> $username]);
+				$userConfigDetails = $sock->fetch_parsed_body();
+				$siteIp = $userConfigDetails['ip'];
+			}
 			$db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$siteIp}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
