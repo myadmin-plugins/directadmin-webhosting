@@ -199,7 +199,7 @@ class Plugin
 			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
 			$apiOption = [
 				'action' => 'create',
-				'domain' => 'wh'.$serviceClass->getId().'ispot.cc',
+				'domain' => 'wh'.$serviceClass->getId().'.ispot.cc',
 				'ubandwidth' => 'unlimited',
 				'uquota' => 'unlimited',
 				'ssl' => 'ON',
