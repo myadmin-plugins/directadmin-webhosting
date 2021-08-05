@@ -197,6 +197,16 @@ class Plugin
 			website_welcome_email($serviceClass->getId());
 			function_requirements('add_dns_record');
 			$result = add_dns_record(14426, 'wh'.$serviceClass->getId(), $siteIp, 'A', 86400, 0, true);
+			$apiOption = [
+				'action' => 'create',
+				'domain' => 'wh'.$serviceClass->getId().'ispot.cc',
+				'ubandwidth' => 'unlimited',
+				'uquota' => 'unlimited',
+				'ssl' => 'ON',
+				'cgi' => 'ON',
+				'php' => 'ON'
+			];
+			$sock->query('/CMD_API_DOMAIN', $apiOption);
 			$event['success'] = true;
 			$event->stopPropagation();
 		}
