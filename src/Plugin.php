@@ -207,6 +207,10 @@ class Plugin
 				'php' => 'ON'
 			];
 			$sock->query('/CMD_API_DOMAIN', $apiOption);
+			$rawResult = $sock->fetch_body();
+			$result = $sock->fetch_parsed_body();
+			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', '/CMD_API_DOMAIN', $apiOptions, $rawResult, $serviceClass->getId());
+			myadmin_log('myadmin', 'info', 'DirectAdmin /CMD_API_DOMAIN : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event['success'] = true;
 			$event->stopPropagation();
 		}
