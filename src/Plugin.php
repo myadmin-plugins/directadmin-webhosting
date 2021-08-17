@@ -206,6 +206,9 @@ class Plugin
 				'cgi' => 'ON',
 				'php' => 'ON'
 			];
+			$sock = new HTTPSocket;
+			$sock->connect('ssl://'.$siteIp, 2222);
+			$sock->set_login($username, $password);
 			$sock->set_method('POST');
 			$sock->query('/CMD_API_DOMAIN', $apiOption);
 			$rawResult = $sock->fetch_body();
