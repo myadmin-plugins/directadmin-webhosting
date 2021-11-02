@@ -41,7 +41,7 @@ class Plugin
 			'ui.menu' => [__CLASS__, 'getMenu']
 		];
 	}
-	
+
 	/**
 	 * @param \Symfony\Component\EventDispatcher\GenericEvent $event
 	 */
@@ -83,6 +83,7 @@ class Plugin
 				$reseller = false;
 				$apiCmd = '/CMD_API_ACCOUNT_USER';
 				$siteIp = $ip;
+				$siteIp = 'shared_random';
 			}
 			$server_ssl="Y";
 			$sock = new HTTPSocket;
@@ -101,8 +102,7 @@ class Plugin
 				'passwd' => $password,
 				'passwd2' => $password,
 				'domain' => $hostname,
-				//'ip' => $siteIp,
-				'ip' => 'shared_random',
+				'ip' => $siteIp,
 				'notify' => 'yes'
 			];
 			if (strpos($serviceTypes[$serviceClass->getType()]['services_field2'], ',') === false) {
