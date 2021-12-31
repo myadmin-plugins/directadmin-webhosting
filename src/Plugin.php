@@ -217,6 +217,7 @@ class Plugin
 			myadmin_log('myadmin', 'info', 'DirectAdmin /CMD_API_DOMAIN : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			$event['success'] = true;
 			$event->stopPropagation();
+			return true;
 		}
 	}
 
@@ -247,7 +248,9 @@ class Plugin
 			$result = $sock->fetch_parsed_body();
 			request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $rawResult, $serviceClass->getId());
 			myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+			$event['success'] = true;
 			$event->stopPropagation();
+			return true;
 		}
 	}
 
@@ -281,7 +284,9 @@ class Plugin
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $rawResult, $serviceClass->getId());
 				myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
+			$event['success'] = true;
 			$event->stopPropagation();
+			return true;
 		}
 	}
 
@@ -316,6 +321,7 @@ class Plugin
 				request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $rawResult, $serviceClass->getId());
 				myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' Response: '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
 			}
+			$event['success'] = true;
 			$event->stopPropagation();
 			if (trim($serviceClass->getUsername()) == '') {
 				return true;
@@ -324,6 +330,7 @@ class Plugin
 			} elseif ($result['text'] == "System user {$serviceClass->getUsername()} does not exist!") {
 				return true;
 			} else {
+				$event['success'] = false;
 				return false;
 			}
 		}
