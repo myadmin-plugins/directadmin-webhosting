@@ -20,44 +20,40 @@ $package='Standard';
 
 echo "Creating user $username on $server_ip.... <br>\n";
 
-$sock = new HTTPSocket;
-if ($server_ssl == 'Y')
-{
-	$sock->connect("ssl://".$server_host, $server_port);
-}
-else
-{ 
-	$sock->connect($server_host, $server_port);
+$sock = new HTTPSocket();
+if ($server_ssl == 'Y') {
+    $sock->connect("ssl://".$server_host, $server_port);
+} else {
+    $sock->connect($server_host, $server_port);
 }
 
-$sock->set_login($server_login,$server_pass);
+$sock->set_login($server_login, $server_pass);
 
-$sock->query('/CMD_API_ACCOUNT_USER',
-	array(
-		'action' => 'create',
-		'add' => 'Submit',
-		'username' => $username,
-		'email' => $email,
-		'passwd' => $pass,
-		'passwd2' => $pass,
-		'domain' => $domain,
-		'package' => $package,
-		'ip' => $server_ip,
-		'notify' => 'yes'
-	));
+$sock->query(
+    '/CMD_API_ACCOUNT_USER',
+    array(
+        'action' => 'create',
+        'add' => 'Submit',
+        'username' => $username,
+        'email' => $email,
+        'passwd' => $pass,
+        'passwd2' => $pass,
+        'domain' => $domain,
+        'package' => $package,
+        'ip' => $server_ip,
+        'notify' => 'yes'
+    )
+);
 
 $result = $sock->fetch_parsed_body();
 print_r($result);
 
-if ($result['error'] != "0")
-{
-	echo "<b>Error Creating user $username on server $server_ip:<br>\n";
-	echo $result['text']."<br>\n";
-	echo $result['details']."<br></b>\n";
-}
-else
-{
-	echo "User $username created on server $server_ip<br>\n";
+if ($result['error'] != "0") {
+    echo "<b>Error Creating user $username on server $server_ip:<br>\n";
+    echo $result['text']."<br>\n";
+    echo $result['details']."<br></b>\n";
+} else {
+    echo "User $username created on server $server_ip<br>\n";
 }
 
 exit(0);

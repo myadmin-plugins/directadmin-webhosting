@@ -30,43 +30,41 @@ $server_port=2222;		// port 2222, the default
 include 'httpsocket.php';
 $email = "";
 
-if (isset($_POST['action']) && $_POST['action'] == 'remove')
-{
-	if (isset($_POST['email']))
-		$email = $_POST['email'];
+if (isset($_POST['action']) && $_POST['action'] == 'remove') {
+    if (isset($_POST['email'])) {
+        $email = $_POST['email'];
+    }
 
-	if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
-	{
-		show_form("Invalid E-Mail address");
-		exit(0);
-	}
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+        show_form("Invalid E-Mail address");
+        exit(0);
+    }
 
-	$sock = new HTTPSocket;
-	$sock->connect(($server_ssl?"ssl://":"").$server_host, $server_port);
-	$sock->set_login($server_login,$server_pass);
-	$sock->set_method('POST');
-	$sock->query('/CMD_API_EMAIL_LIST',
-		array(
-			'action' => 'delete_subscriber',
-			'domain' => $domain,
-			'name' => $list,
-			'select0' => $email
-		));
+    $sock = new HTTPSocket();
+    $sock->connect(($server_ssl ? "ssl://" : "").$server_host, $server_port);
+    $sock->set_login($server_login, $server_pass);
+    $sock->set_method('POST');
+    $sock->query(
+        '/CMD_API_EMAIL_LIST',
+        array(
+            'action' => 'delete_subscriber',
+            'domain' => $domain,
+            'name' => $list,
+            'select0' => $email
+        )
+    );
 
-	$result = $sock->fetch_parsed_body();
+    $result = $sock->fetch_parsed_body();
 
-	if ($result['error'] != "0")
-	{
-		echo "<b>Error removing E-Mail from mailing list:<br>\n";
-		echo $result['text']."<br>\n";
-		echo $result['details']."<br></b>\n";
-	}
-	else
-	{
-		show_form("", "E-Mail Deleted from list");
-	}
+    if ($result['error'] != "0") {
+        echo "<b>Error removing E-Mail from mailing list:<br>\n";
+        echo $result['text']."<br>\n";
+        echo $result['details']."<br></b>\n";
+    } else {
+        show_form("", "E-Mail Deleted from list");
+    }
 
-	exit(0);
+    exit(0);
 }
 
 show_form();
@@ -74,8 +72,7 @@ exit(0);
 
 function show_form($error="", $result="")
 {
-	global $email, $domain, $list;
-?>
+    global $email, $domain, $list; ?>
 
 	<html>
         <style>
@@ -123,33 +120,28 @@ function show_form($error="", $result="")
 	<tr><td>
 
 	<?php
-	if ($result != "")
-	{
-		echo "<div class=success>";
-		echo $result;
-		echo "</div>";
-	}
-	else
-	{
-		?>
+    if ($result != "") {
+        echo "<div class=success>";
+        echo $result;
+        echo "</div>";
+    } else {
+        ?>
 
 
 		<h1>Remove your address from <?php echo "$list@$domain"; ?> mailing list</h1>
 		<form action=? method=POST>
 		<input type=hidden name=action value="remove">
-		<b>E-Mail Address to remove</b>: <input type=text name=email value="<?php echo htmlspecialchars(stripslashes($email));?>" placeholder="email@domain.com">
+		<b>E-Mail Address to remove</b>: <input type=text name=email value="<?php echo htmlspecialchars(stripslashes($email)); ?>" placeholder="email@domain.com">
 		<input type=submit value="Remove">
 		<?php
-		if ($error != "")
-		{
-			echo "<div class=error>";
-			echo $error;
-			echo "</div>";
-		}
-		?>
+        if ($error != "") {
+            echo "<div class=error>";
+            echo $error;
+            echo "</div>";
+        } ?>
 		</form>
 		</td>
 		<?php
-	} ?>
+    } ?>
 </tr></table></html><?php
 }

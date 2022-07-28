@@ -5,27 +5,27 @@
 
 include 'httpsocket.php';
 
-$sock = new HTTPSocket;
-$sock->connect('127.0.0.1',2222);
+$sock = new HTTPSocket();
+$sock->connect('127.0.0.1', 2222);
 
 $user = getenv('username');
 $pass = getenv('passwd');
 
-$sock->set_login("${user}","${pass}");
+$sock->set_login("${user}", "${pass}");
 
 $sock->set_method('POST');
 
-$sock->query('/CMD_API_DATABASES',
-        array(
+$sock->query(
+    '/CMD_API_DATABASES',
+    array(
                 'action' => 'create',
                 'name' => "db",
                 'user' => "dbuser",
                 'passwd' => "$pass",
                 'passwd2' => "$pass",
-    ));
+    )
+);
 
 $result = $sock->fetch_body();
 
 echo $result;
-
-?>

@@ -12,26 +12,22 @@ $server_port=2222;
 
 $username='firstsit';
 
-$sock = new HTTPSocket;
-if ($server_ssl == 'Y')
-{
-	$sock->connect("ssl://".$server_host, $server_port);
-}
-else
-{ 
-	$sock->connect($server_host, $server_port);
+$sock = new HTTPSocket();
+if ($server_ssl == 'Y') {
+    $sock->connect("ssl://".$server_host, $server_port);
+} else {
+    $sock->connect($server_host, $server_port);
 }
 
-$sock->set_login($server_login,$server_pass);
+$sock->set_login($server_login, $server_pass);
 
-$sock->query('/CMD_API_SELECT_USERS',
-	array(
-		'location' => 'CMD_SELECT_USERS',
-		'suspend' => 'Unsuspend', // note - this can also be 'Unsuspend'
-		'select0' => $username
-	));
+$sock->query(
+    '/CMD_API_SELECT_USERS',
+    array(
+        'location' => 'CMD_SELECT_USERS',
+        'suspend' => 'Unsuspend', // note - this can also be 'Unsuspend'
+        'select0' => $username
+    )
+);
 $result = $sock->fetch_parsed_body();
 print_r($result);
-
-
-?>

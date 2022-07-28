@@ -1,6 +1,6 @@
 <?php
 
-use \Detain\MyAdminDirectAdminWeb\HTTPSocket;
+use Detain\MyAdminDirectAdminWeb\HTTPSocket;
 
 require_once('../vendor/autoload.php');
 

@@ -30,20 +30,20 @@ $ips = "127.0.0.1\n1.2.3.4\n";
 // *************
 
 $values  = array(
-		'action' => 'create',
-		'keyname' => $keyname,
-		'key' => $key_value,
-		'key2' => $key_value,		
-		'hour' => $hour,
-		'minute' => $minute,
-		'month' => $month,
-		'day' => $day,
-		'year' => $year,
-		'max_uses' => $max_uses,
-		'ips' => $ips,
-		'passwd' => $password,
-		'create' => 'Create'
-	);
+        'action' => 'create',
+        'keyname' => $keyname,
+        'key' => $key_value,
+        'key2' => $key_value,
+        'hour' => $hour,
+        'minute' => $minute,
+        'month' => $month,
+        'day' => $day,
+        'year' => $year,
+        'max_uses' => $max_uses,
+        'ips' => $ips,
+        'passwd' => $password,
+        'create' => 'Create'
+    );
 
 // *************
 // EDIT start
@@ -66,17 +66,20 @@ $count_deny = 0;
 
 
 //checkboxes must not exist in array if value is no.
-if ($never_expires == "yes")
-	$values['never_expires'] = 'yes';
-if ($allow_htm == "yes")
-	$values['allow_htm'] = 'yes';
-if ($clear_key == "yes")
-	$values['clear_key'] = 'yes';
+if ($never_expires == "yes") {
+    $values['never_expires'] = 'yes';
+}
+if ($allow_htm == "yes") {
+    $values['allow_htm'] = 'yes';
+}
+if ($clear_key == "yes") {
+    $values['clear_key'] = 'yes';
+}
 
 
 
-$sock = new HTTPSocket;
-$sock->connect('localhost',2222);
+$sock = new HTTPSocket();
+$sock->connect('localhost', 2222);
 
 $sock->set_login($username, $password);
 
