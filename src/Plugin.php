@@ -321,9 +321,9 @@ class Plugin
             $event->stopPropagation();
             if (trim($serviceClass->getUsername()) == '') {
                 return true;
-            } elseif ($result['error'] == "0") {
+            } elseif (isset($result['error']) && $result['error'] == "0") {
                 return true;
-            } elseif ($result['text'] == "System user {$serviceClass->getUsername()} does not exist!") {
+            } elseif (isset($result['text']) && $result['text'] == "System user {$serviceClass->getUsername()} does not exist!") {
                 return true;
             } else {
                 $event['success'] = false;
