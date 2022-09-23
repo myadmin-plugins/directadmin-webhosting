@@ -236,7 +236,7 @@ class Plugin
             $apiCmd = '/CMD_API_SELECT_USERS';
             $apiOptions = [
                 'location' => 'CMD_SELECT_USERS',
-                'suspend' => 'Unsuspend',
+                'dounsuspend' => 'y',
                 'select0' => $serviceClass->getUsername()
             ];
             $sock->query($apiCmd, $apiOptions);
