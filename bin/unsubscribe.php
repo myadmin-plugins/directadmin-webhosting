@@ -46,12 +46,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'remove') {
     $sock->set_method('POST');
     $sock->query(
         '/CMD_API_EMAIL_LIST',
-        array(
+        [
             'action' => 'delete_subscriber',
             'domain' => $domain,
             'name' => $list,
             'select0' => $email
-        )
+        ]
     );
 
     $result = $sock->fetch_parsed_body();

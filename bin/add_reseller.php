@@ -31,7 +31,7 @@ $sock->set_login($server_login, $server_pass);
 
 $sock->query(
     '/CMD_API_ACCOUNT_RESELLER',
-    array(
+    [
         'action' => 'create',
         'add' => 'Submit',
         'username' => $username,
@@ -42,7 +42,7 @@ $sock->query(
         'package' => $package,
         'ip' => 'shared',
         'notify' => 'yes'
-    )
+    ]
 );
 
 $result = $sock->fetch_parsed_body();

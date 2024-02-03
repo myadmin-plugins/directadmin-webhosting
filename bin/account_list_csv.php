@@ -6,10 +6,10 @@
 include 'httpsocket.php';
 
 $sock = new HTTPSocket();
-$servers = array(
-    'some.server.com' => array('admin','password'),
-    'other.server.com' => array('admin','password')
-);
+$servers = [
+    'some.server.com' => ['admin','password'],
+    'other.server.com' => ['admin','password']
+];
 
 foreach ($servers as $server => $credentials) {
     $sock->connect($server, 2222);
@@ -23,8 +23,8 @@ foreach ($servers as $server => $credentials) {
         $result2 = $sock->fetch_parsed_body();
 
         if (!$header) {
-            $cols = array();
-            $h = array('server','user');
+            $cols = [];
+            $h = ['server','user'];
             foreach ($result2 as $k=>$v) {
                 $h[] = $k;
                 $cols[] = $k;
@@ -33,7 +33,7 @@ foreach ($servers as $server => $credentials) {
             echo join("\t", $h)."\n";
         }
 
-        $row = array($server,$user);
+        $row = [$server,$user];
         foreach ($cols as $col) {
             $row[] = $result2[$col];
         }

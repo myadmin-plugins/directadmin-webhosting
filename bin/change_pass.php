@@ -36,7 +36,7 @@ $sock->set_method('POST');
 
 $sock->query(
     '/CMD_API_USER_PASSWD',
-    array(
+    [
         'username' => $username,
         'passwd' => $pass,
         'passwd2' => $pass,
@@ -44,7 +44,7 @@ $sock->query(
         'system' => 'yes',
         'ftp' => 'yes',
         'database' => 'yes'
-    )
+    ]
 );
 
 $result = $sock->fetch_parsed_body();

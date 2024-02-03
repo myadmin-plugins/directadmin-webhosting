@@ -17,13 +17,13 @@ $sock->set_method('POST');
 
 $sock->query(
     '/CMD_API_DATABASES',
-    array(
+    [
                 'action' => 'create',
                 'name' => "db",
                 'user' => "dbuser",
                 'passwd' => "$pass",
                 'passwd2' => "$pass",
-    )
+    ]
 );
 
 $result = $sock->fetch_body();

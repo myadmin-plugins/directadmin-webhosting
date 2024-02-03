@@ -25,11 +25,11 @@ echo "Creating user $username on $server_host.... <br>\n";
 
 $sock->query(
     '/CMD_API_SELECT_USERS',
-    array(
+    [
         'confirmed' => 'Confirm',
         'delete' => 'yes',
         'select0' => $username,
-    )
+    ]
 );
 
 $result = $sock->fetch_parsed_body();

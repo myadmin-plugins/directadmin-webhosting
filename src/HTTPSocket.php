@@ -59,16 +59,16 @@ class HTTPSocket
 
     public $bind_host;
 
-    public $error = array();
-    public $warn = array();
-    public $query_cache = array();
+    public $error = [];
+    public $warn = [];
+    public $query_cache = [];
 
     public $doFollowLocationHeader = true;
     public $redirectURL;
     public $max_redirects = 5;
     public $ssl_setting_message = 'DirectAdmin appears to be using SSL. Change your script to connect to ssl://';
 
-    public $extra_headers = array();
+    public $extra_headers = [];
 
     public static function unhtmlentities($string)
     {
@@ -136,7 +136,7 @@ class HTTPSocket
      */
     public function query($request, $content = '', $doSpeedCheck = 0)
     {
-        $this->error = $this->warn = array();
+        $this->error = $this->warn = [];
         $this->result_status_code = null;
 
         $is_ssl = false;
@@ -172,10 +172,10 @@ class HTTPSocket
             $is_ssl = true;
         }
 
-        $array_headers = array(
+        $array_headers = [
             'Host' => ($this->remote_port == 80 ? $this->remote_host : "$this->remote_host:$this->remote_port"),
             'Accept' => '*/*',
-            'Connection' => 'Close' );
+            'Connection' => 'Close' ];
 
         foreach ($this->extra_headers as $key => $value) {
             $array_headers[$key] = $value;
@@ -185,7 +185,7 @@ class HTTPSocket
 
         // was content sent as an array? if so, turn it into a string
         if (is_array($content)) {
-            $pairs = array();
+            $pairs = [];
 
             foreach ($content as $key => $value) {
                 $pairs[] = "$key=".urlencode($value);
@@ -352,7 +352,7 @@ class HTTPSocket
      */
     public function clear_headers()
     {
-        $this->extra_headers = array();
+        $this->extra_headers = [];
     }
 
     /**
@@ -375,14 +375,14 @@ class HTTPSocket
     {
         $array_headers = preg_split("/\r\n/", $this->result_header);
 
-        $array_return = array( 0 => $array_headers[0] );
+        $array_return = [ 0 => $array_headers[0] ];
         unset($array_headers[0]);
 
         foreach ($array_headers as $pair) {
             if ($pair == '' || $pair == "\r\n") {
                 continue;
             }
-            list($key, $value) = preg_split("/: /", $pair, 2);
+            [$key, $value] = preg_split("/: /", $pair, 2);
             $array_return[strtolower($key)] = $value;
         }
 

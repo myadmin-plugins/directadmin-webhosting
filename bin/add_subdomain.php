@@ -11,11 +11,11 @@ $sock->set_method('POST');
 
 $sock->query(
     '/CMD_API_SUBDOMAINS',
-    array(
+    [
         'action' => 'create',
         'domain' => '{parent_domain}',
         'subdomain' => '{subdomain_name}'
-    )
+    ]
 );
 $result = $sock->fetch_body();
 

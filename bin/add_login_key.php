@@ -29,7 +29,7 @@ $ips = "127.0.0.1\n1.2.3.4\n";
 // EDIT end
 // *************
 
-$values  = array(
+$values  = [
         'action' => 'create',
         'keyname' => $keyname,
         'key' => $key_value,
@@ -43,7 +43,7 @@ $values  = array(
         'ips' => $ips,
         'passwd' => $password,
         'create' => 'Create'
-    );
+    ];
 
 // *************
 // EDIT start

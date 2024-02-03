@@ -11,7 +11,7 @@ $sock->set_method('POST');
 
 $sock->query(
     '/CMD_DOMAIN',
-    array(
+    [
         'action' => 'create',
         'domain' => '{new_domain}',
         'ubandwidth' => 'unlimited',
@@ -20,7 +20,7 @@ $sock->query(
         'cgi' => 'ON',
         'php' => 'ON',
         'create' => 'Create'
-    )
+    ]
 );
 $result = $sock->fetch_body();
 

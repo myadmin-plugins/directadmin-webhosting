@@ -10,12 +10,12 @@ $sock->set_method('POST');
 
 $sock->query(
     '/CMD_API_DNS_ADMIN',
-    array(
+    [
                 'domain' => 'domain.com',
                 'action' => 'select',
                 'mxrecs0' => 'name=domain.com.&value=10 mail',
                 'delete' => 'Delete Selected'
-    )
+    ]
 );
 $result = $sock->fetch_body();
 
