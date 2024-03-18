@@ -73,7 +73,7 @@ class Plugin
             if (trim($hostname) == '') {
                 $hostname = $serviceClass->getId().'.server.com';
             }
-            $password = website_get_password($serviceClass->getId());
+            $password = website_get_password($serviceClass->getId(), $serviceClass->getCustid());
             $username = get_new_webhosting_username($serviceClass->getId(), $hostname, $serviceClass->getServer());
             if (in_array('reseller', explode(',', $event['field1']))) {
                 $reseller = true;
