@@ -91,6 +91,12 @@ class Plugin
             $sock->set_login('admin', $hash);
             $sock->query('/CMD_API_SHOW_RESELLER_IPS');
             $result = $sock->fetch_parsed_body();
+            if (!isset($result['list'])) {
+                $event['success'] = false;
+                myadmin_log('directadmin', 'error', 'Error Gettting Reseller IPS '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
+                $event->stopPropagation();
+                return;
+            }
             if (!in_array($siteIp, $result['list'])) {
                 $siteIp = $result['list'][0];
             }
