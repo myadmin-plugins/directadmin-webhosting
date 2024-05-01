@@ -129,7 +129,7 @@ class Plugin
                 $event['success'] = false;
                 getcurlpage('https://chat.is.cc/hooks/BAckHdSAoMsPieCof/CHQ3bKKo5Kh2HeHFJWDpxqBFyj2i7WZwmsLpLM7PmHK5D2fR', json_encode([
                     'username' => 'Interesting Guy',
-                    'text' => 'Failed Website '.$serviceClass->getId().' Activation Text:'.$result['text'].' Details:'.$result['details'],
+                    'text' => 'Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.$result['text'].' Details:'.$result['details'],
                 ]), [CURLOPT_HTTPHEADER => ['Content-type: application/json']]);
                 myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.$result['text'].' Details:'.$result['details'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
                 $event->stopPropagation();
