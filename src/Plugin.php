@@ -99,7 +99,7 @@ class Plugin
                 return;
             }
             if (!in_array($siteIp, $result['list'])) {
-                $siteIp = $result['list'][0];
+                $siteIp = $result['list'][0];                                     
             }
             */
             $apiOptions = [
@@ -127,7 +127,7 @@ class Plugin
             $result = $sock->fetch_parsed_body();
             request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $rawResult, $serviceClass->getId());
             myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' '.json_encode($apiOptions).' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
-            if ($result['error'] != "0") {
+            if ($result['error'] != "0" && ((isset($result['text']) && trim($result['text']) != '') || (isset($result['details']) && trim($result['details']) != ''))) {
                 $event['success'] = false;
                 getcurlpage('https://chat.is.cc/hooks/BAckHdSAoMsPieCof/CHQ3bKKo5Kh2HeHFJWDpxqBFyj2i7WZwmsLpLM7PmHK5D2fR', json_encode([
                     'username' => 'Interesting Guy',
