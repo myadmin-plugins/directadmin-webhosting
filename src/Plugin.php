@@ -139,7 +139,6 @@ class Plugin
                     return;
                 }
             }
-            }
             /* if ($serviceTypes[$serviceClass->getType()]['services_field2'] != '') {
                 $fields = explode(',', $serviceTypes[$serviceClass->getType()]['services_field2']);
                 foreach ($fields as $field) {
