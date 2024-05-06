@@ -74,6 +74,10 @@ class Plugin
                 $hostname = $serviceClass->getId().'.server.com';
             }
             $password = website_get_password($serviceClass->getId(), $serviceClass->getCustid());
+            if (!$password) {
+                $password = generateRandomString(10, 2, 2, 2, 1);
+                $GLOBALS['tf']->history->add($settings['PREFIX'], 'password', $serviceClass->getId(), $password);
+            }
             $username = get_new_webhosting_username($serviceClass->getId(), $hostname, $serviceClass->getServer());
             if (in_array('reseller', explode(',', $event['field1']))) {
                 $reseller = true;
