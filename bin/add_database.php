@@ -11,7 +11,7 @@ $sock->connect('127.0.0.1', 2222);
 $user = getenv('username');
 $pass = getenv('passwd');
 
-$sock->set_login("${user}", "${pass}");
+$sock->set_login("{$user}", "{$pass}");
 
 $sock->set_method('POST');
 
