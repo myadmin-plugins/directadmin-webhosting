@@ -407,5 +407,6 @@ class Plugin
         $settings->setTarget('module');
         $settings->add_select_master(_(self::$module), _('Default Servers'), self::$module, 'new_website_directadmin_server', _('Default DirectAdmin Setup Server'), NEW_WEBSITE_DIRECTADMIN_SERVER, get_service_define('WEB_DIRECTADMIN'));
         $settings->add_dropdown_setting(self::$module, _('Out of Stock'), 'outofstock_webhosting_directadmin', _('Out Of Stock DirectAdmin Webhosting'), _('Enable/Disable Sales Of This Type'), $settings->get_setting('OUTOFSTOCK_WEBHOSTING_DIRECTADMIN'), ['0', '1'], ['No', 'Yes']);
+        $settings->setTarget('global');
     }
 }
