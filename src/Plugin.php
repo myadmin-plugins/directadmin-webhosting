@@ -103,7 +103,7 @@ class Plugin
                 return;
             }
             if (!in_array($siteIp, $result['list'])) {
-                $siteIp = $result['list'][0];                                     
+                $siteIp = $result['list'][0];
             }
             */
             $apiOptions = [
@@ -134,10 +134,7 @@ class Plugin
             if ($result['error'] != "0") {
                 if ((isset($result['text']) && trim($result['text']) != '') || (isset($result['details']) && trim($result['details']) != '')) {
                     $event['success'] = false;
-                    getcurlpage('https://chat.is.cc/hooks/BAckHdSAoMsPieCof/CHQ3bKKo5Kh2HeHFJWDpxqBFyj2i7WZwmsLpLM7PmHK5D2fR', json_encode([
-                        'username' => 'Interesting Guy',
-                        'text' => 'Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.$result['text'].' Details:'.$result['details'],
-                    ]), [CURLOPT_HTTPHEADER => ['Content-type: application/json']]);
+                    chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.$result['text'].' Details:'.$result['details'], 'int-dev');
                     myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.$result['text'].' Details:'.$result['details'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
                     $event->stopPropagation();
                     return;
