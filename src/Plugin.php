@@ -76,7 +76,7 @@ class Plugin
             $password = website_get_password($serviceClass->getId(), $serviceClass->getCustid());
             if (!$password) {
                 $password = generateRandomString(10, 2, 2, 2, 1);
-                $GLOBALS['tf']->history->add($settings['PREFIX'], 'password', $serviceClass->getId(), $password);
+                \MyAdmin\App::history()->add($settings['PREFIX'], 'password', $serviceClass->getId(), $password);
             }
             $username = get_new_webhosting_username($serviceClass->getId(), $hostname, $serviceClass->getServer());
             if (in_array('reseller', explode(',', $event['field1']))) {
@@ -165,7 +165,7 @@ class Plugin
                     if ($result['error'] != "0") {
                     }
                 }
-                $GLOBALS['tf']->history->add($settings['PREFIX'], 'password', $serviceClass->getId(), $options['password']);
+                \MyAdmin\App::history()->add($settings['PREFIX'], 'password', $serviceClass->getId(), $options['password']);
             }
             if (isset($result['result']) && $result['result'][0]['statusmsg'] == 'Sorry, a group for that username already exists.') {
                 while ($result['result'][0]['statusmsg'] == 'Sorry, a group for that username already exists.') {
@@ -363,7 +363,7 @@ class Plugin
                 $event['status'] = 'error';
                 $event['status_text'] = 'Error Code '.$result['faultcode'].': '.$result['fault'];
             } else {
-                $GLOBALS['tf']->history->add($settings['TABLE'], 'change_ip', $event['newip'], $serviceClass->getId(), $serviceClass->getCustid());
+                \MyAdmin\App::history()->add($settings['TABLE'], 'change_ip', $event['newip'], $serviceClass->getId(), $serviceClass->getCustid());
                 $serviceClass->set_ip($event['newip'])->save();
                 $event['status'] = 'ok';
                 $event['status_text'] = 'The IP Address has been changed.';

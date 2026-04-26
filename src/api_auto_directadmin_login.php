@@ -20,7 +20,7 @@ function api_auto_directadmin_login($id)
 {
     $return = ['status' => 'error', 'status_text' => ''];
     $module = 'webhosting';
-    $custid = get_custid($GLOBALS['tf']->session->account_id, 'vps');
+    $custid = get_custid(\MyAdmin\App::session()->account_id, 'vps');
     $settings = get_module_settings($module);
     $db = get_module_db($module);
     $id = (int)$id;
@@ -61,7 +61,7 @@ function api_auto_directadmin_login($id)
             'clear_key' => 'no',
             'allow_html' => 'yes',
             'passwd' => $serviceMaster[$settings['PREFIX'].'_key'],
-            'ips' => $GLOBALS['tf']->session::get_client_ip(),
+            'ips' => \MyAdmin\App::session()::get_client_ip(),
         ];
         */
         $apiOptions = [
@@ -72,7 +72,7 @@ function api_auto_directadmin_login($id)
             'clear_key' => 'yes',
             'allow_html' => 'yes',
             'passwd' => $serviceMaster[$settings['PREFIX'].'_key'],
-            //'ips' => $GLOBALS['tf']->session::get_client_ip(),
+            //'ips' => \MyAdmin\App::session()::get_client_ip(),
             'login_keys_notify_on_creation' => 0,
             //'redirect-url' => '/user/email/accounts',
         ];
