@@ -131,11 +131,11 @@ class Plugin
             $result = $sock->fetch_parsed_body();
             request_log(self::$module, $serviceClass->getCustid(), __FUNCTION__, 'directadmin', $apiCmd, $apiOptions, $rawResult, $serviceClass->getId());
             myadmin_log('myadmin', 'info', 'DirectAdmin '.$apiCmd.' '.json_encode($apiOptions).' : '.json_encode($result), __LINE__, __FILE__, self::$module, $serviceClass->getId());
-            if ($result['error'] != "0") {
+            if (($result['error'] ?? '0') != "0") {
                 if ((isset($result['text']) && trim($result['text']) != '') || (isset($result['details']) && trim($result['details']) != '')) {
                     $event['success'] = false;
-                    chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.$result['text'].' Details:'.$result['details'], 'int-dev');
-                    myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.$result['text'].' Details:'.$result['details'], __LINE__, __FILE__, self::$module, $serviceClass->getId());
+                    chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), 'int-dev');
+                    myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), __LINE__, __FILE__, self::$module, $serviceClass->getId());
                     $event->stopPropagation();
                     return;
                 }
@@ -199,10 +199,14 @@ class Plugin
             }
             $db = get_module_db(self::$module);
             $username = $db->real_escape($username);
+            $siteIp = '';
             if (!isset($result['error']) || $result['error'] == '0' || $result['error'] == 0) {
                 $sock->query('/CMD_API_SHOW_USER_CONFIG', ['user'=> $username]);
                 $userConfigDetails = $sock->fetch_parsed_body();
-                $siteIp = $userConfigDetails['ip'];
+                $siteIp = $userConfigDetails['ip'] ?? '';
+                if ($siteIp === '') {
+                    myadmin_log('directadmin', 'error', 'SHOW_USER_CONFIG returned no ip for '.$username, __LINE__, __FILE__, self::$module, $serviceClass->getId());
+                }
             }
             $db->query("update {$settings['TABLE']} set {$settings['PREFIX']}_ip='{$siteIp}', {$settings['PREFIX']}_username='{$username}' where {$settings['PREFIX']}_id='{$serviceClass->getId()}'", __LINE__, __FILE__);
             website_welcome_email($serviceClass->getId());
