@@ -137,7 +137,7 @@ class Plugin
                         $event['success'] = false;
                         $event['status'] = 'error';
                         $event['status_text'] = 'Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? '');
-                        chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), 'int-dev');
+                        chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), 'notifications');
                         myadmin_log('directadmin', 'error', 'Error Creating User '.$username.' Site '.$hostname.' Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), __LINE__, __FILE__, self::$module, $serviceClass->getId());
                         $event->stopPropagation();
                         return;
@@ -241,11 +241,59 @@ class Plugin
                 $event['success'] = false;
                 $event['status'] = 'error';
                 $event['status_text'] = 'Exception during activation: '.$e->getMessage();
-                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation exception: '.$e->getMessage(), 'int-dev');
+                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Activation exception: '.$e->getMessage(), 'notifications');
                 $event->stopPropagation();
                 return false;
             }
         }
+    }
+
+    /**
+     * Collapses DirectAdmin's repetitive per-user error output into a compact message.
+     *
+     * When a reseller is unsuspended DirectAdmin runs the activation for every child user
+     * and returns one "Error activating <reseller>'s user <name>: <body>" block per user.
+     * When they all fail the same way (e.g. a failing user_activate_post.sh hook) the details
+     * string balloons with the identical error repeated once per user - a single failure has
+     * been seen storing 17KB of duplicated text. This groups the blocks by their error body so
+     * the stored/notified text carries each distinct error once, with the list of affected
+     * users. Returns the input unchanged when the expected pattern is not present.
+     *
+     * @param string $details the raw DirectAdmin details string
+     * @param int $maxUsers max usernames to list per distinct error before summarizing the rest
+     * @return string the compacted details
+     */
+    public static function compactReactivationDetails($details, $maxUsers = 25)
+    {
+        if (!is_string($details) || trim($details) === '') {
+            return (string) $details;
+        }
+        if (!preg_match_all('/Error activating (\S+?)\'s user (\S+?):(.*?)(?=Error activating \S+?\'s user |\z)/s', $details, $matches, PREG_SET_ORDER)) {
+            return $details;
+        }
+        $groups = [];
+        $order = [];
+        foreach ($matches as $m) {
+            $reseller = $m[1];
+            $username = $m[2];
+            $body = trim($m[3]);
+            $key = $reseller."\0".$body;
+            if (!isset($groups[$key])) {
+                $groups[$key] = ['reseller' => $reseller, 'body' => $body, 'users' => []];
+                $order[] = $key;
+            }
+            $groups[$key]['users'][] = $username;
+        }
+        $out = [];
+        foreach ($order as $key) {
+            $g = $groups[$key];
+            $count = count($g['users']);
+            $userList = $count > $maxUsers
+                ? implode(', ', array_slice($g['users'], 0, $maxUsers)).' and '.($count - $maxUsers).' more'
+                : implode(', ', $g['users']);
+            $out[] = 'Error activating '.$g['reseller']."'s ".$count.' user'.($count == 1 ? '' : 's').' ('.$userList.'): '.$g['body'];
+        }
+        return implode(PHP_EOL.PHP_EOL, $out);
     }
 
     /**
@@ -279,8 +327,9 @@ class Plugin
                 if (isset($result['error']) && $result['error'] != "0" && !(isset($result['text']) && $result['text'] == "System user {$serviceClass->getUsername()} does not exist!")) {
                     $event['success'] = false;
                     $event['status'] = 'error';
-                    $event['status_text'] = 'Reactivation failed'.(isset($result['text']) && trim($result['text']) != '' ? ': '.$result['text'] : '').(isset($result['details']) && trim($result['details']) != '' ? ' '.$result['details'] : '');
-                    chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Reactivation Text:'.($result['text'] ?? '').' Details:'.($result['details'] ?? ''), 'int-dev');
+                    $details = isset($result['details']) ? self::compactReactivationDetails($result['details']) : '';
+                    $event['status_text'] = 'Reactivation failed'.(isset($result['text']) && trim($result['text']) != '' ? ': '.$result['text'] : '').(trim($details) != '' ? ' '.$details : '');
+                    chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Reactivation Text:'.($result['text'] ?? '').' Details:'.$details, 'notifications');
                     $event->stopPropagation();
                     return false;
                 }
@@ -292,7 +341,7 @@ class Plugin
                 $event['success'] = false;
                 $event['status'] = 'error';
                 $event['status_text'] = 'Exception during reactivation: '.$e->getMessage();
-                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Reactivation exception: '.$e->getMessage(), 'int-dev');
+                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Reactivation exception: '.$e->getMessage(), 'notifications');
                 $event->stopPropagation();
                 return false;
             }
@@ -338,7 +387,7 @@ class Plugin
                 $event['success'] = false;
                 $event['status'] = 'error';
                 $event['status_text'] = 'Exception during deactivation: '.$e->getMessage();
-                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Deactivation exception: '.$e->getMessage(), 'int-dev');
+                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Deactivation exception: '.$e->getMessage(), 'notifications');
                 $event->stopPropagation();
                 return false;
             }
@@ -396,7 +445,7 @@ class Plugin
                 $event['success'] = false;
                 $event['status'] = 'error';
                 $event['status_text'] = 'Exception during termination: '.$e->getMessage();
-                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Termination exception: '.$e->getMessage(), 'int-dev');
+                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') Termination exception: '.$e->getMessage(), 'notifications');
                 $event->stopPropagation();
                 return false;
             }
@@ -431,7 +480,7 @@ class Plugin
                 $event['success'] = false;
                 $event['status'] = 'error';
                 $event['status_text'] = 'Exception during getChangeIp: '.$e->getMessage();
-                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') getChangeIp exception: '.$e->getMessage(), 'int-dev');
+                chatNotify('Failed [Website '.$serviceClass->getId().'](https://my.interserver.net/admin/view_website?id='.$serviceClass->getId().') getChangeIp exception: '.$e->getMessage(), 'notifications');
                 $event->stopPropagation();
                 return false;
             }
