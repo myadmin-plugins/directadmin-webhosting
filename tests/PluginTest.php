@@ -126,13 +126,15 @@ class PluginTest extends TestCase
             'webhosting.reactivate',
             'webhosting.deactivate',
             'webhosting.terminate',
-            'api.register',
             'function.requirements',
             'ui.menu',
         ];
         foreach ($expectedKeys as $key) {
             $this->assertArrayHasKey($key, $hooks, "Hook key '{$key}' should exist");
         }
+        // the SOAP api that api.register fed was removed from core, and with it
+        // api_auto_directadmin_login (it logged in as "admin|" + an undefined variable)
+        $this->assertArrayNotHasKey('api.register', $hooks);
     }
 
     /**
@@ -189,7 +191,6 @@ class PluginTest extends TestCase
     public function testEventHandlerSignatures(): void
     {
         $eventHandlerMethods = [
-            'apiRegister',
             'getActivate',
             'getReactivate',
             'getDeactivate',
@@ -220,12 +221,12 @@ class PluginTest extends TestCase
     }
 
     /**
-     * Test that the number of hooks is exactly 8.
+     * Test that the number of hooks is exactly 7.
      */
     public function testGetHooksCount(): void
     {
         $hooks = Plugin::getHooks();
-        $this->assertCount(8, $hooks);
+        $this->assertCount(7, $hooks);
     }
 
     /**

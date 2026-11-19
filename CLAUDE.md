@@ -19,7 +19,7 @@ vendor/bin/phpunit tests/SourceFileAnalysisTest.php
 - **Autoload**: PSR-4 via `composer.json`
 - **Entry**: `src/Plugin.php` — registers all event hooks via `getHooks()`
 - **HTTP client**: `src/HTTPSocket.php` — curl-based client for DirectAdmin API on port `2222`
-- **SSO**: `src/api_auto_directadmin_login.php` — `api_auto_directadmin_login($id)` function
+- **SSO**: customer DirectAdmin auto login lives in core (`MyAdmin\Webhosting\DirectAdminLogin`), which checks the panel account is a user/reseller before creating a login key. The old SOAP-only `api_auto_directadmin_login()` was removed.
 - **Utility**: `src/unhtmlentities.php` — `unhtmlentities()` helper
 - **CLI scripts**: `bin/` — standalone operational scripts (add_user, suspend_user, delete_user, etc.)
 - **Tests**: `tests/PluginTest.php` · `tests/HTTPSocketTest.php` · `tests/SourceFileAnalysisTest.php`
@@ -37,7 +37,6 @@ vendor/bin/phpunit tests/SourceFileAnalysisTest.php
 | `webhosting.deactivate` | `getDeactivate()` | `/CMD_API_SELECT_USERS` (suspend) |
 | `webhosting.terminate` | `getTerminate()` | `/CMD_API_SELECT_USERS` (delete) |
 | `webhosting.settings` | `getSettings()` | — |
-| `api.register` | `apiRegister()` | — |
 | `function.requirements` | `getRequirements()` | — |
 | `ui.menu` | `getMenu()` | — |
 
@@ -125,7 +124,7 @@ This package is on the shared contract harness from `detain/myadmin-plugin-insta
 `--force --write` to re-emit it), never hand-edit it.
 
 The harness **executes** the plugin: it defines the bare constants the class body references
-and then calls `getHooks()`, `getSettings()`, `getMenu()`, `apiRegister()` and — for
+and then calls `getHooks()`, `getSettings()`, `getMenu()` and — for
 `type=service` packages — the activate/deactivate/change-ip/queue handlers, for real.
 
 **So do not write reflection-only tests for the plugin class.** Asserting a handler exists,

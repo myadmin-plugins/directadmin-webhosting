@@ -36,22 +36,9 @@ class Plugin
             self::$module.'.reactivate' => [__CLASS__, 'getReactivate'],
             self::$module.'.deactivate' => [__CLASS__, 'getDeactivate'],
             self::$module.'.terminate' => [__CLASS__, 'getTerminate'],
-            'api.register' => [__CLASS__, 'apiRegister'],
             'function.requirements' => [__CLASS__, 'getRequirements'],
             'ui.menu' => [__CLASS__, 'getMenu']
         ];
-    }
-
-    /**
-     * @param \Symfony\Component\EventDispatcher\GenericEvent $event
-     */
-    public static function apiRegister(GenericEvent $event)
-    {
-        /**
-         * @var \ServiceHandler $subject
-         */
-        //$subject = $event->getSubject();
-        api_register('api_auto_directadmin_login', ['id' => 'int'], ['return' => 'result_status'], 'Logs into DirectAdmin for the given website id and returns a unique logged-in url.  The status will be "ok" if successful, or "error" if there was any problems status_text will contain a description of the problem if any.');
     }
 
     /**
@@ -504,7 +491,6 @@ class Plugin
          * @var \MyAdmin\Plugins\Loader $this->loader
          */
         $loader = $event->getSubject();
-        $loader->add_requirement('api_auto_directadmin_login', '/../vendor/detain/myadmin-directadmin-webhosting/src/api_auto_directadmin_login.php');
     }
 
     /**

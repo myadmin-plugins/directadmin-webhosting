@@ -113,7 +113,6 @@ class ContractTest extends ServicePluginTestCase
                 'webhosting.reactivate',
                 'webhosting.deactivate',
                 'webhosting.terminate',
-                'api.register',
                 'function.requirements',
                 'ui.menu',
             ],

@@ -36,11 +36,12 @@ class SourceFileAnalysisTest extends TestCase
     }
 
     /**
-     * Test that api_auto_directadmin_login.php file exists.
+     * api_auto_directadmin_login.php was removed with core's SOAP api: it logged in
+     * as "admin|" + an undefined variable and is not to come back.
      */
-    public function testApiAutoLoginFileExists(): void
+    public function testApiAutoLoginFileIsGone(): void
     {
-        $this->assertFileExists($this->srcDir . '/api_auto_directadmin_login.php');
+        $this->assertFileDoesNotExist($this->srcDir . '/api_auto_directadmin_login.php');
     }
 
     /**
@@ -193,30 +194,15 @@ class SourceFileAnalysisTest extends TestCase
     }
 
     /**
-     * Test that api_auto_directadmin_login.php defines the function.
+     * no source file defines or registers api_auto_directadmin_login any more
      */
-    public function testApiAutoLoginDefinesFunction(): void
+    public function testApiAutoLoginIsNotDefinedOrRegistered(): void
     {
-        $content = file_get_contents($this->srcDir . '/api_auto_directadmin_login.php');
-        $this->assertStringContainsString('function api_auto_directadmin_login(', $content);
-    }
-
-    /**
-     * Test that api_auto_directadmin_login.php uses HTTPSocket.
-     */
-    public function testApiAutoLoginUsesHttpSocket(): void
-    {
-        $content = file_get_contents($this->srcDir . '/api_auto_directadmin_login.php');
-        $this->assertStringContainsString('use Detain\\MyAdminDirectAdminWeb\\HTTPSocket;', $content);
-    }
-
-    /**
-     * Test that api_auto_directadmin_login.php references the login keys API.
-     */
-    public function testApiAutoLoginReferencesLoginKeysApi(): void
-    {
-        $content = file_get_contents($this->srcDir . '/api_auto_directadmin_login.php');
-        $this->assertStringContainsString('/CMD_API_LOGIN_KEYS', $content);
+        foreach (glob($this->srcDir . '/*.php') as $file) {
+            $content = file_get_contents($file);
+            $this->assertStringNotContainsString('function api_auto_directadmin_login(', $content, basename($file));
+            $this->assertStringNotContainsString("'api_auto_directadmin_login'", $content, basename($file));
+        }
     }
 
     /**
@@ -259,12 +245,13 @@ class SourceFileAnalysisTest extends TestCase
     }
 
     /**
-     * Test that Plugin.php contains apiRegister method.
+     * Test that Plugin.php no longer has the apiRegister method (its only
+     * registration was the removed api_auto_directadmin_login).
      */
-    public function testPluginContainsApiRegisterMethod(): void
+    public function testPluginHasNoApiRegisterMethod(): void
     {
         $content = file_get_contents($this->srcDir . '/Plugin.php');
-        $this->assertStringContainsString('function apiRegister(', $content);
+        $this->assertStringNotContainsString('function apiRegister(', $content);
     }
 
     /**
